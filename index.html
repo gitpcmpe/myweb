@@ -1,14 +1,149 @@
 <!DOCTYPE HTML>
-<html>
-  <head>
-    <title>My page</title>
-    <script type="text/javascript" src="wgo.min.js"></script>
-    <script type="text/javascript" src="wgo.player.min.js"></script>
-    <link type="text/css" href="wgo.player.css" rel="stylesheet" />
-  </head>
-  <body>
-    <div data-wgo="game.sgf" style="width: 700px">
-      Sorry, your browser doesn't support WGo.js. Download SGF <a href="game.sgf">directly</a>.
-    </div>
-  </body>
+<html lang="zh-CN" xmlns="http://www.w3.org/1999/html>
+<head>
+  <meta charset="utf-8"
+
+	<title>WGo - Test 1</title>
+	<script type="text/javascript" src="../wgo/wgo.js"></script>
+	<script type="text/javascript" src="../wgo/kifu.js"></script>
+	<script type="text/javascript" src="../wgo/sgfparser.js"></script>
+	<script type="text/javascript" src="../wgo/player.js"></script>
+	<script type="text/javascript" src="../wgo/basicplayer.js"></script>
+	<script type="text/javascript" src="../wgo/basicplayer.component.js"></script>
+	<script type="text/javascript" src="../wgo/basicplayer.infobox.js"></script>
+	<script type="text/javascript" src="../wgo/basicplayer.commentbox.js"></script>
+	<script type="text/javascript" src="../wgo/basicplayer.control.js"></script>
+	<script type="text/javascript" src="../wgo/player.editable.js"></script>
+	<script type="text/javascript" src="../wgo/scoremode.js"></script>
+	<script type="text/javascript" src="../wgo/player.permalink.js"></script>
+
+	<link rel="stylesheet" type="text/css" href="../wgo/wgo.player.css" />
+	<style>.player { width: 500px; }</style>
+
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>  
+</head>
+<body>
+  <input type="radio" id="one" name="select_sgf" value="1" checked=""> 1_sgf
+  <input type="radio" id="two" name="select_sgf" value="2"> 2_sgf   
+
+<!--
+<div style="float: left">
+  <h3>Using HTML data attributes</h3>
+  <div data-wgo="game.sgf" data-wgo-layout="top: 'InfoBox', bottom: ['Control', 'CommentBox']" class="player">
+  Your browser doesn't support WGo Player. Use some modern browser like IE9, Google Chrome or Mozilla Firefox.
+  </div>
+</div>
+//-->
+
+<div style="float: left; margin-left: 50px, margin-right: 50px">
+  <!--<h3>Via Javascript</h3>//-->
+  <div class="player" id="player">
+  Your browser doesn't support WGo Player. Use some modern browser like IE9, Google Chrome or Mozilla Firefox.
+  </div>
+</div>
+
+<script type="text/javascript">
+  var jbFunction = function(sgf_content) {
+    new WGo.BasicPlayer(document.getElementById("player"), {
+      sgfFile: sgf_content,
+        layout: {top: 'InfoBox', bottom: ['Control', 'CommentBox']}
+      });
+  };
+
+  $(function() { 
+    sgf_content = "test.sgf";
+      jbFunction(sgf_content);
+          
+    $("#one").click(function(){
+      //sgf_content = "https://open.cyberoro.com/gibo/202312/mz-a.sgf";
+      sgf_content = "game.sgf"
+      jbFunction(sgf_content);
+    });
+    $("#two").click(function(){
+      sgf_content = "test.sgf";
+      jbFunction(sgf_content);
+    });    
+  });
+</script>
+
+<script>
+//https://github.com/waltheri/wgo.js/issues/41
+//to add hover point to the board
+
+// create a player
+var player = new WGo.BasicPlayer(document.getElementById('player'), {
+    sgf: '(;C[Some SGF])',
+});
+
+// red dot drawing handler
+WGo.Board.drawHandlers.red_dot = {
+    stone: {
+        draw: function(args, board) {
+            var xr = board.getX(args.x),
+                yr = board.getY(args.y),
+                sr = board.stoneRadius;
+
+            this.fillStyle = "red";
+            this.beginPath();
+            this.arc(xr-board.ls, yr-board.ls, sr/3, 0, 2*Math.PI, true);
+            this.fill();
+        },
+    },
+}
+
+// board mousemove callback
+var board_mouse_move = function(x,y) {
+    // mouse position didn't change
+    if(this._lastX == x && this._lastY == y) return;
+
+    // save current position
+    this._lastX = x;
+    this._lastY = y;
+
+    // remove old dot
+    if(this._last_mark) {
+        this.board.removeObject(this._last_mark);
+        delete this._last_mark;
+    }
+
+    if(x != -1 && y != -1) {
+        // paint red dot and save it
+        this._last_mark = {
+            type: "red_dot",
+            x: x,
+            y: y, 
+        };
+        this.board.addObject(this._last_mark);
+    }
+}
+
+// board mouseout callback  
+var board_mouse_out = function() {
+    if(this._last_mark) {
+        // clean everything
+        this.board.removeObject(this._last_mark);
+        delete this._last_mark;
+        delete this._lastX;
+        delete this._lastY;
+    }
+}
+
+// board mouseout callback  
+function playAudio(url) {
+  new Audio(url).play();
+}
+
+var board_mouse_click = function() {
+    if(this._last_mark) {
+        new playAudio('https://interactive-examples.mdn.mozilla.net/media/cc0-audio/t-rex-roar.mp3')
+    }
+}
+
+// add event listeners
+player.board.addEventListener("mousemove", board_mouse_move.bind(player));
+player.board.addEventListener("mouseout", board_mouse_out.bind(player));  
+player.board.addEventListener("click", board_mouse_click.bind(player));
+</script>
+
+</body>
 </html>
