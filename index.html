@@ -4,6 +4,8 @@
   <meta charset="utf-8"
 
 	<title>WGo - Test 1</title>
+
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>  
 	<script type="text/javascript" src="../wgo/wgo.js"></script>
 	<script type="text/javascript" src="../wgo/kifu.js"></script>
 	<script type="text/javascript" src="../wgo/sgfparser.js"></script>
@@ -19,8 +21,6 @@
 
 	<link rel="stylesheet" type="text/css" href="../wgo/wgo.player.css" />
 	<style>.player { width: 500px; }</style>
-
-  <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>  
 </head>
 <body>
   <input type="radio" id="one" name="select_sgf" value="1" checked=""> 1_sgf
@@ -52,7 +52,7 @@
   };
 
   $(function() { 
-    sgf_content = "game.sgf";
+    sgf_content = "test.sgf";
       jbFunction(sgf_content);
           
     $("#one").click(function(){
