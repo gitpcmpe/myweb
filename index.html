@@ -51,8 +51,8 @@
       });
   };
 
-
-    sgf_content = "test.sgf";
+  $(function() { 
+    sgf_content = "game.sgf";
       jbFunction(sgf_content);
           
     $("#one").click(function(){
@@ -63,7 +63,8 @@
     $("#two").click(function(){
       sgf_content = "test.sgf";
       jbFunction(sgf_content);
-    });   
+    });    
+  });
 </script>
 
 <script>
